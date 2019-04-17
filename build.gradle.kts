@@ -1,7 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.internal.os.OperatingSystem
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
 plugins {
+    `java-library`
     id("kotlin") version("1.3.21") apply false
     id("shadow") version("4.0.4") apply false
     id("junit-platform-gradle-plugin") version("1.2.0") apply false
@@ -38,8 +39,8 @@ subprojects {
     }
 
     dependencies {
-        "implementation"("org.jetbrains.kotlin:kotlin-stdlib")
-        "testImplementation"("io.kotlintest:kotlintest-runner-junit5:$kotlintest_version")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib")
+        testImplementation("io.kotlintest:kotlintest-runner-junit5:$kotlintest_version")
     }
 
     val sourcesJar by tasks.registering(Jar::class) {
@@ -47,10 +48,7 @@ subprojects {
 
         archiveClassifier.set("sources")
 
-        configure<KotlinProjectExtension> {
-            // OLD: from sourceSets.main.allSource
-            // from(sourceSets["main"].allSource)
-        }
+        from(sourceSets["main"].allSource)
     }
 
     val javadocJar by tasks.registering(Jar::class) {
@@ -68,44 +66,46 @@ subprojects {
         add("archives", javadocJar)
     }
 
-    // jar {
-    //     inputs.property("moduleName", moduleName)
-    //     manifest.attributes("Automatic-Module-Name": moduleName)
-    // }
+    tasks.named<Jar>("jar") {
+        inputs.property("moduleName", moduleName)
+        manifest {
+            attributes["Automatic-Module-Name"] = moduleName
+        }
+    }
 }
 
 project(":glm") {
     apply(plugin = "java-library")
 
     dependencies {
-        "api"("com.github.kotlin-graphics:kotlin-unsigned:$unsigned_version")
-        "api"("com.github.kotlin-graphics:kool:$kool_version")
+        api("com.github.kotlin-graphics:kotlin-unsigned:$unsigned_version")
+        api("com.github.kotlin-graphics:kool:$kool_version")
 
-        "testImplementation"(project(":glm-test"))
+        testImplementation(project(":glm-test"))
 
-        "testImplementation"("io.kotlintest:kotlintest-runner-junit5:$kotlintest_version")
+        testImplementation("io.kotlintest:kotlintest-runner-junit5:$kotlintest_version")
 
         listOf("", "-glfw", "-jemalloc", "-openal", "-opengl", "-stb").forEach {
-            "implementation"("org.lwjgl:lwjgl$it:$lwjgl_version")
-            "implementation"("org.lwjgl:lwjgl$it:$lwjgl_version:natives-$lwjgl_natives")
+            implementation("org.lwjgl:lwjgl$it:$lwjgl_version")
+            implementation("org.lwjgl:lwjgl$it:$lwjgl_version:natives-$lwjgl_natives")
         }
     }
 
-    configure<KotlinProjectExtension> {
-        // test.useJUnitPlatform()
+    tasks.named<Test>("test") {
+        useJUnitPlatform()
     }
 
-    // configure<ShadowJar> {
-    //     archiveClassifier.set("all")
-    // }
+    tasks.named<ShadowJar>("shadowJar") {
+        archiveClassifier.set("all")
+    }
 }
 
 project(":glm-test") {
 
     dependencies {
-        "implementation"(project(":glm"))
+        implementation(project(":glm"))
 
-        "implementation"("io.kotlintest:kotlintest-core:$kotlintest_version")
-        "implementation"("io.kotlintest:kotlintest-assertions:$kotlintest_version")
+        implementation("io.kotlintest:kotlintest-core:$kotlintest_version")
+        implementation("io.kotlintest:kotlintest-assertions:$kotlintest_version")
     }
 }
