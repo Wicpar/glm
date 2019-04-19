@@ -10,7 +10,7 @@ pluginManagement {
 			if (requested.id.id == "kotlin") {
 				useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
 			}
-			if (requested.id.id == "shadow") {
+			if (requested.id.id == "com.github.johnrengelman.shadow") {
 				useModule("com.github.jengelman.gradle.plugins:shadow:${requested.version}")
 			}
 			if (requested.id.id == "junit-platform-gradle-plugin") {

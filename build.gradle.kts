@@ -4,7 +4,7 @@ import org.gradle.internal.os.OperatingSystem
 plugins {
     `java-library`
     id("kotlin") version("1.3.21") apply false
-    id("shadow") version("4.0.4") apply false
+    id("com.github.johnrengelman.shadow") version("4.0.4") apply false
     id("junit-platform-gradle-plugin") version("1.2.0") apply false
 }
 
