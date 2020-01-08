@@ -27,7 +27,7 @@ ext {
     moduleName = "${group}.glm"
     unsigned_version = 'jdk8-SNAPSHOT'
     kool_version = 'jdk8-SNAPSHOT'
-    lwjgl_version = "3.2.3"
+    lwjgl_version = "3.2.2"
     lwjgl_natives = current() == WINDOWS ? "windows" : current() == LINUX ? "linux" : "macos"
 }
 
